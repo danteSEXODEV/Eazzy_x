@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EAZZY X | ELITE SYSTEM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --diablo-red: #ff0000;
+            --dark-red: #4a0000;
+            --bg-black: #020202;
+            --neon-glow: 0 0 15px var(--diablo-red);
+            --ui-border: rgba(255, 255, 255, 0.1);
+            --ui-bg: rgba(255, 255, 255, 0.05);
+            --gold: #ffd700;
+        }
+
+        * { cursor: none !important; }
+        #custom-cursor {
+            width: 25px; height: 25px; border: 2px solid var(--diablo-red);
+            border-radius: 50%; position: fixed; pointer-events: none;
+            z-index: 99999; box-shadow: var(--neon-glow);
+            transition: transform 0.08s ease-out; display: flex; align-items: center; justify-content: center;
+        }
+        #custom-cursor::after { content: ''; width: 4px; height: 4px; background: white; border-radius: 50%; }
+
+        body {
+            margin: 0; padding: 0; background-color: var(--bg-black);
+            color: white; font-family: 'Poppins', sans-serif; overflow-x: hidden; user-select: none;
+        }
+
+        #matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.15; }
+
+        .top-bar {
+            position: fixed; top: 0; width: 100%; padding: 15px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0,0,0,0.95); border-bottom: 2px solid var(--diablo-red);
+            z-index: 1000; font-family: 'Orbitron'; box-sizing: border-box;
+        }
+
+        .support-links { display: flex; gap: 20px; }
+        .support-links a { color: #888; text-decoration: none; font-size: 0.7rem; transition: 0.3s; font-weight: bold; }
+        .support-links a:hover { color: var(--diablo-red); text-shadow: var(--neon-glow); }
+
+        #main-content { display: none; padding: 140px 20px 60px; text-align: center; }
+
+        /* SELECTOR DE PAÍSES */
+        .country-grid {
+            display: flex; justify-content: center; flex-wrap: wrap;
+            gap: 10px; max-width: 900px; margin: 0 auto 40px;
+        }
+
+        .country-box {
+            display: flex; align-items: center; gap: 8px;
+            background: var(--ui-bg); border: 1px solid var(--ui-border);
+            padding: 10px 15px; border-radius: 6px;
+            font-size: 0.8rem; font-weight: 600; color: #fff; 
+            transition: 0.3s; min-width: 100px; justify-content: center;
+        }
+
+        .country-box img { width: 20px; height: 14px; border-radius: 2px; }
+        
+        .country-box:hover, .country-box.active {
+            background: rgba(255, 0, 0, 0.15); border-color: var(--diablo-red);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); transform: scale(1.05);
+        }
+
+        .pricing-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; }
+
+        .card {
+            background: linear-gradient(145deg, #0a0000, #1a0000);
+            border: 1px solid var(--dark-red); padding: 30px; width: 380px;
+            transition: 0.4s; position: relative; border-radius: 5px;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .card:hover { border-color: var(--diablo-red); transform: translateY(-10px); }
+
+        .info-box {
+            text-align: left; background: rgba(0,0,0,0.4); border: 1px solid #200;
+            padding: 15px; margin: 15px 0; font-size: 0.75rem; line-height: 1.6; color: #bbb;
+            min-height: 250px; overflow-y: auto;
+        }
+
+        .elite-cat { color: var(--gold); font-family: 'Orbitron'; font-size: 0.65rem; border-bottom: 1px solid #430; margin-top: 10px; display: block; letter-spacing: 1px; }
+        .elite-item { display: block; padding-left: 10px; color: #ddd; }
+
+        .btn-buy {
+            background: var(--diablo-red); color: black; border: none; padding: 18px;
+            width: 100%; font-family: 'Orbitron'; font-weight: 900;
+            transition: 0.3s; clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%);
+            margin-bottom: 15px;
+        }
+        .btn-buy:hover { background: white; box-shadow: 0 0 25px white; }
+
+        .card-footer-links { display: flex; justify-content: center; gap: 15px; font-size: 0.7rem; }
+        .card-footer-links a { color: #555; text-decoration: none; transition: 0.3s; }
+        .card-footer-links a:hover { color: white; }
+
+        /* MODALES */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 10000; justify-content: center; align-items: center; }
+        .modal-content { background: #050505; border: 2px solid var(--diablo-red); padding: 30px; width: 380px; text-align: center; }
+        
+        .opt-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .option-item {
+            background: #111; border: 1px solid #333; padding: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-family: 'Orbitron'; font-size: 0.8rem; transition: 0.3s;
+        }
+        .option-item:hover { border-color: var(--diablo-red); background: #200; }
+
+        .overlay { position: fixed; inset: 0; background: black; z-index: 20000; display: flex; justify-content: center; align-items: center; }
+        .login-box { background: #050000; padding: 50px; border: 2px solid var(--diablo-red); text-align: center; }
+        input { background: transparent; border: 1px solid #333; color: white; padding: 15px; width: 250px; text-align: center; font-family: 'Orbitron'; margin-bottom: 20px; outline: none; }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <canvas id="matrix-bg"></canvas>
+    <div id="custom-cursor"></div>
+
+    <div id="login-screen" class="overlay">
+        <div class="login-box">
+            <h2 style="font-family:'Orbitron'; color:var(--diablo-red); letter-spacing: 3px;">EAZZY X ACCESS</h2>
+            <input type="text" id="discord-name" placeholder="IDENTIDAD DISCORD">
+            <button class="btn-buy" onclick="initApp()">IDENTIFICARSE</button>
+            <p style="font-size: 0.6rem; color: #444; margin-top: 15px;">PROTECTED BY EAZZY SYSTEM</p>
+        </div>
+    </div>
+
+    <div id="top-bar" class="top-bar" style="display:none;">
+        <div>
+            <span style="font-size:0.7rem; color:#444;">OPERADOR:</span>
+            <span id="op-name" style="color:red; font-size:0.8rem;">---</span>
+        </div>
+        <div class="support-links">
+            <a href="https://discord.gg/KQqKWfrw5W" target="_blank">DISCORD OFICIAL</a>
+            <a href="https://wa.me/541168858458" target="_blank">SOPORTE VENTAS</a>
+        </div>
+        <div id="clock" style="color:red; font-size:0.8rem;">00:00:00</div>
+    </div>
+
+    <div id="main-content">
+        <h1 style="font-family:'Orbitron'; font-size:3rem; margin:0 0 30px 0; letter-spacing: 8px;">EAZZY <span style="color:red">X</span></h1>
+
+        <div class="country-grid">
+            <div class="country-box active" onclick="selectCur('ARS', this)"><img src="https://flagcdn.com/w40/ar.png"> ARS</div>
+            <div class="country-box" onclick="selectCur('USD', this)"><img src="https://flagcdn.com/w40/us.png"> USD</div>
+            <div class="country-box" onclick="selectCur('USD', this)"><img src="https://flagcdn.com/w40/mx.png"> MXN</div>
+            <div class="country-box" onclick="selectCur('USD', this)"><img src="https://flagcdn.com/w40/co.png"> COP</div>
+            <div class="country-box" onclick="selectCur('USD', this)"><img src="https://flagcdn.com/w40/cl.png"> CLP</div>
+            <div class="country-box" onclick="selectCur('USD', this)"><img src="https://flagcdn.com/w40/pe.png"> PEN</div>
+            <div class="country-box" onclick="selectCur('USD', this)"><img src="https://flagcdn.com/w40/br.png"> BRL</div>
+        </div>
+        
+        <div class="pricing-container">
+            <div class="card">
+                <div>
+                    <div style="color:red; font-family:'Orbitron'; font-size: 1.1rem; border-left: 3px solid red; padding-left: 10px; margin-bottom: 10px;">EAZZY X BYPASS</div>
+                    <div class="info-box">
+                        <span class="elite-cat">SYSTEM INFO</span>
+                        <span class="elite-item">Bypass emulador de alta seguridad.</span>
+                        <span class="elite-item">Cero modificación de memoria.</span>
+                        <span class="elite-item">Inyección vía UID de jugador.</span>
+                        <span class="elite-item">Servidor online anti-rastreo.</span>
+                        
+                        <span class="elite-cat">COMPATIBILIDAD</span>
+                        <span class="elite-item">MSI (Todas las versiones)</span>
+                        <span class="elite-item">Bluestacks (4 & 5)</span>
+                        <span class="elite-item">FF NORMAL / INDIA / TELA</span>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn-buy" onclick="openPlans('BYPASS')">ADQUIRIR BYPASS</button>
+                    <div class="card-footer-links">
+                        <a href="https://discord.gg/KQqKWfrw5W" target="_blank">Entrar Discord</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="border-color: var(--gold);">
+                <div>
+                    <div style="color:var(--gold); font-family:'Orbitron'; font-size: 1.1rem; border-left: 3px solid var(--gold); padding-left: 10px; margin-bottom: 10px;">ELITE PANEL</div>
+                    <div class="info-box" style="border-color: #430;">
+                        <span class="elite-cat">🎯 𝐀𝐈𝐌 𝐂𝐎𝐍𝐓𝐑𝐎𝐋</span>
+                        <span class="elite-item">+ Silent Aim (Normal / 360 / FOV)</span>
+                        <span class="elite-item">+ Aimbot IA (Predicción Inteligente)</span>
+                        <span class="elite-item">+ Aimbot Collider & Headtracking</span>
+                        
+                        <span class="elite-cat">🔭 𝐒𝐍𝐈𝐏𝐄𝐑 𝐌𝐎𝐒𝐓𝐄𝐑</span>
+                        <span class="elite-item">+ Scope Sniper & Quick Sniper</span>
+                        <span class="elite-item">+ Fix Delay AWM / Kar98</span>
+                        
+                        <span class="elite-cat">👁️ 𝐕𝐈𝐒𝐔𝐀𝐋 & 𝐄𝐒𝐏</span>
+                        <span class="elite-item">+ ESP Lineas (Antena)</span>
+                        <span class="elite-item">+ ESP Wukong & Escondite</span>
+                        
+                        <span class="elite-cat">⚡ 𝐌𝐎𝐕𝐄𝐌𝐄𝐍𝐓 & 𝐄𝐗𝐏𝐋𝐎𝐈𝐓𝐒</span>
+                        <span class="elite-item">+ Ghost Lag & Fly Hack</span>
+                        <span class="elite-item">+ TP Enemy & TP Mark (Teleport)</span>
+                        <span class="elite-item">+ Speed Hack & Medikit Run</span>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn-buy" style="background:var(--gold);" onclick="openPlans('ELITE')">ADQUIRIR ELITE</button>
+                    <div class="card-footer-links">
+                        <a href="https://discord.gg/KQqKWfrw5W" target="_blank">Entrar Discord</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="duration-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="dur-title" style="font-family:'Orbitron'; color:red; margin:0;">PLANES</h3>
+            <div id="plans-container" class="opt-list"></div>
+            <p onclick="closeModals()" style="cursor:pointer; color:#444; margin-top:20px; font-size:0.7rem;">[ CERRAR ]</p>
+        </div>
+    </div>
+
+    <div id="pay-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="font-family:'Orbitron'; color:red; margin:0;">DETALLES DE PAGO</h3>
+            <p id="summary" style="font-size:0.8rem; color:#888; margin:15px 0; border: 1px dashed #333; padding: 10px;"></p>
+            <div id="payment-options" class="opt-list"></div>
+            <p onclick="closeModals()" style="cursor:pointer; color:#444; margin-top:20px; font-size:0.7rem;">[ VOLVER ]</p>
+        </div>
+    </div>
+
+    <script>
+        let userActual = "";
+        let selectedProduct = "";
+        let selectedCurrency = "ARS";
+        let dolarBlue = 1200;
+
+        const plansData = {
+            'ELITE': [ {t: 'SEMANAL', p: 6}, {t: 'MENSUAL', p: 10}, {t: 'ANUAL', p: 28} ],
+            'BYPASS': [ {t: '7 DÍAS', p: 5}, {t: '30 DÍAS', p: 12}, {t: '60 DÍAS', p: 28}, {t: '90 DÍAS', p: 42}, {t: '365 DÍAS', p: 50} ]
+        };
+
+        function selectCur(cur, element) {
+            selectedCurrency = cur;
+            document.querySelectorAll('.country-box').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function openPlans(prod) {
+            selectedProduct = prod;
+            const container = document.getElementById('plans-container');
+            container.innerHTML = "";
+            document.getElementById('dur-title').innerText = `${prod} (${selectedCurrency})`;
+            plansData[prod].forEach(plan => {
+                const isArs = selectedCurrency === 'ARS';
+                const finalPrice = isArs ? (plan.p * dolarBlue).toLocaleString() : plan.p;
+                const div = document.createElement('div');
+                div.className = "option-item";
+                div.onclick = () => showPayment(plan.t, finalPrice);
+                div.innerHTML = `<span>${plan.t}</span> <span style="color:red;">${isArs ? '$' : 'USD '}${finalPrice}</span>`;
+                container.appendChild(div);
+            });
+            document.getElementById('duration-modal').style.display = 'flex';
+        }
+
+        function showPayment(time, price) {
+            document.getElementById('duration-modal').style.display = 'none';
+            const options = document.getElementById('payment-options');
+            document.getElementById('summary').innerText = `PRODUCTO: ${selectedProduct}\nVALIDEZ: ${time}\nTOTAL: ${selectedCurrency === 'ARS' ? '$' : 'USD '}${price}`;
+            options.innerHTML = "";
+            if(selectedCurrency === 'ARS') {
+                options.innerHTML = `<div class="option-item" onclick="finish('MERCADO PAGO', '${price}')">MERCADO PAGO (ALIAS)</div>`;
+            } else {
+                options.innerHTML = `<div class="option-item" onclick="finish('PAYPAL', '${price}')">PAYPAL</div>`;
+            }
+            options.innerHTML += `<div class="option-item" onclick="finish('WHATSAPP', '${price}')">SOPORTE WHATSAPP</div>`;
+            document.getElementById('pay-modal').style.display = 'flex';
+        }
+
+        function finish(method, price) {
+            // CONECTADO AL NUEVO WEBHOOK DE DISCORD
+            fetch("https://discord.com/api/webhooks/1461226445366890506/6Ekd7KjynDNalZImyJ-wSw82CKWfiPFGxyJhSdAmBiGusMHuKenApS17yy6psdStWG78", {
+                method: "POST",
+                headers: {"Content-Type":"application/json"},
+                body: JSON.stringify({
+                    embeds: [{
+                        title: "🎯 ORDEN GENERADA - EAZZY X",
+                        color: 16711680,
+                        fields: [
+                            { name: "👤 Operador", value: userActual, inline: true },
+                            { name: "📦 Item", value: selectedProduct, inline: true },
+                            { name: "💵 Monto", value: `${selectedCurrency} ${price}`, inline: true },
+                            { name: "💳 Método", value: method, inline: true }
+                        ],
+                        timestamp: new Date()
+                    }]
+                })
+            });
+
+            if(method === 'MERCADO PAGO') {
+                navigator.clipboard.writeText("dante1.emiliano.mp");
+                alert("ALIAS COPIADO: dante1.emiliano.mp");
+                window.open("https://www.mercadopago.com.ar/", "_blank");
+            } else {
+                window.open(`https://wa.me/541168858458?text=Hola, soy ${userActual}, quiero comprar ${selectedProduct} por ${selectedCurrency} ${price}`, "_blank");
+            }
+            closeModals();
+        }
+
+        function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+
+        function initApp() {
+            userActual = document.getElementById('discord-name').value;
+            if(!userActual) return alert("INGRESE SU IDENTIDAD");
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            document.getElementById('top-bar').style.display = 'flex';
+            document.getElementById('op-name').innerText = userActual.toUpperCase();
+        }
+
+        // Matrix Logic
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const columns = canvas.width / 16; const drops = Array(Math.floor(columns)).fill(1);
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "#300"; ctx.font = "16px Orbitron";
+            drops.forEach((y, i) => {
+                ctx.fillText(Math.floor(Math.random()*2), i * 16, y * 16);
+                if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }
+        setInterval(drawMatrix, 50);
+        const cursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', e => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0b0b0d;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+}
+
+h1, h2, .badge {
+    font-family: 'Orbitron', sans-serif;
+}
+
+.hidden { display: none; }
+
+/* Overlay de Login */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.login-box {
+    background: #1a1a1e;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    border: 2px solid #00f2ff;
+    box-shadow: 0 0 20px #00f2ff55;
+    animation: fadeIn 0.8s ease;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 12px;
+    margin: 20px 0;
+    background: #25252b;
+    border: 1px solid #333;
+    color: white;
+    border-radius: 5px;
+}
+
+.login-box button {
+    background: #00f2ff;
+    border: none;
+    padding: 10px 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-box button:hover { transform: scale(1.1); }
+
+/* Tienda */
+header {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.highlight { color: #00f2ff; text-shadow: 0 0 10px #00f2ff; }
+
+.pricing-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.card {
+    background: #16161a;
+    width: 300px;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    position: relative;
+    transition: 0.4s;
+    border: 1px solid #333;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    border-color: #00f2ff;
+}
+
+.badge {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #00f2ff;
+}
+
+.card ul { list-style: none; line-height: 2.5; margin-bottom: 25px; }
+
+.buy-btn {
+    background: transparent;
+    border: 1px solid #00f2ff;
+    color: white;
+    padding: 10px 25px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.buy-btn:hover {
+    background: #00f2ff;
+    color: black;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
